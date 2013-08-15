@@ -4,8 +4,13 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.File;
+import java.io.PrintWriter;
+import java.util.Locale;
 
-public class HttpResponse {
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponse;
+
+public class HttpResponse implements ServletResponse{
 
 	private static final int BUFFER_SIZE = 1024;
 	public static final String ERROR_404 = "HTTP/1.1 404 File Not Found\r\n"
@@ -13,6 +18,11 @@ public class HttpResponse {
 			+ "<h1>File Not Found</h1>";
 	HttpRequest request;
 	OutputStream output;
+	PrintWriter writer;
+
+	public void setWriter(PrintWriter writer) {
+		this.writer = writer;
+	}
 
 	public HttpResponse(OutputStream output) {
 		this.output = output;
@@ -46,5 +56,77 @@ public class HttpResponse {
 			if (fis != null)
 				fis.close();
 		}
+	}
+
+	@Override
+	public void flushBuffer() throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getBufferSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getCharacterEncoding() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Locale getLocale() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServletOutputStream getOutputStream() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrintWriter getWriter() throws IOException {
+		writer = new PrintWriter(output, true);
+		return writer;
+	}
+
+	@Override
+	public boolean isCommitted() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBufferSize(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setContentLength(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setContentType(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setLocale(Locale arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

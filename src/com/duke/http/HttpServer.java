@@ -28,14 +28,13 @@ public class HttpServer {
 
 		try {
 			serverSocket = new ServerSocket(PORT, 1,
-					InetAddress.getByName("127.0.0.1"));
+					InetAddress.getByName(IP_ADDR));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Could not listen on port: " + PORT);
 			System.exit(-1);
 		}
 
-		// Loop waiting for a request
 		Socket socket = null;
 		BufferedReader input = null;
 		OutputStream output = null;
@@ -50,22 +49,25 @@ public class HttpServer {
 			}
 
 			try {
-				//input = socket.getInputStream();
-                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				input = new BufferedReader(new InputStreamReader(
+						socket.getInputStream()));
 				output = socket.getOutputStream();
 
-				// create Request object and parse
 				HttpRequest request = new HttpRequest(input);
 				request.parse();
 
-				// create Response object
 				HttpResponse response = new HttpResponse(output);
 				response.setRequest(request);
-				response.sendStaticResource();
 
-				// Close the socket
+				if (request.getUri().startsWith("/servlet/")) {
+					ServletProcessor processor = new ServletProcessor();
+					processor.process(request, response);
+				} else {
+					StaticResourceProcessor processor = new StaticResourceProcessor();
+					processor.process(request, response);
+				}
+
 				output.close();
-				
 				socket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
