@@ -1,4 +1,4 @@
-package com.duke.http;
+package com.duke.moyan.connector;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -11,8 +11,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 public class ServletProcessor {
-	public static final String WEB_ROOT = System.getProperty("user.dir")
-			+ File.separator + "webapps";
 
 	public void process(HttpRequest request, HttpResponse response) {
 
@@ -24,12 +22,12 @@ public class ServletProcessor {
 			// create a URLClassLoader
 			URL[] urls = new URL[1];
 			URLStreamHandler streamHandler = null;
-			File classPath = new File(WEB_ROOT);
+			File classPath = new File(Constants.WEB_ROOT);
 			// the forming of repository is taken from the createClassLoader
 			// method in
 			// org.apache.catalina.startup.ClassLoaderFactory
 			String repository = (new URL("file", null,
-					classPath.getCanonicalPath() + File.separator)).toString() + "servlet" + File.separator;
+					classPath.getCanonicalPath() + File.separator)).toString() + Constants.SERVLET_DIR + File.separator;
 			// the code for forming the URL is taken from the addRepository
 			// method in
 			// org.apache.catalina.loader.StandardClassLoader class.
