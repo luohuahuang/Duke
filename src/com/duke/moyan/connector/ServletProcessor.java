@@ -10,11 +10,16 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.duke.moyan.request.HttpRequest;
+import com.duke.moyan.request.HttpRequestFacade;
+import com.duke.moyan.response.HttpResponse;
+import com.duke.moyan.response.HttpResponseFacade;
+
 public class ServletProcessor {
 
 	public void process(HttpRequest request, HttpResponse response) {
 
-		String uri = request.getUri();
+		String uri = request.getRequestURI();
 		String servletName = uri.substring(uri.lastIndexOf("/") + 1);
 		URLClassLoader loader = null;
 
@@ -51,6 +56,7 @@ public class ServletProcessor {
 			servlet = (Servlet) myClass.newInstance();
 			servlet.service((ServletRequest) requestFacade,
 					(ServletResponse) responseFacade);
+			response.finishResponse();
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		} catch (Throwable e) {

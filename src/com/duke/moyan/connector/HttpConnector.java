@@ -7,39 +7,39 @@ import java.net.Socket;
 
 public class HttpConnector implements Runnable{
 
-	@SuppressWarnings("resource")
-	@Override
-	public void run() {
-		ServerSocket serverSocket = null;
+	  boolean stopped;
+	  private String scheme = "http";
 
-		try {
-			serverSocket = new ServerSocket(Constants.PORT, 1,
-					InetAddress.getByName(Constants.IP_ADDR));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Could not listen on port: " + Constants.PORT);
-			System.exit(-1);
-		}
+	  public String getScheme() {
+	    return scheme;
+	  }
 
-		Socket socket = null;
-
-		while (true) {
-			try {
-				socket = serverSocket.accept();
-				System.out.println("Yes, accepted");
-				//Thread.sleep(10000);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Accept failed: " + Constants.PORT);
-				System.exit(-1);
-			}
-
-			Runnable httpthread;
-			httpthread = new HttpAgent(socket);
-			Thread thread = new Thread(httpthread);
-			thread.start();
-		}
-	}
+	  public void run() {
+	    ServerSocket serverSocket = null;
+	    int port = 8080;
+	    try {
+	      serverSocket =  new ServerSocket(port, 1, InetAddress.getByName("127.0.0.1"));
+	    }
+	    catch (IOException e) {
+	      e.printStackTrace();
+	      System.exit(1);
+	    }
+	    while (!stopped) {
+	      // Accept the next incoming connection from the server socket
+	      Socket socket = null;
+	      try {
+	        socket = serverSocket.accept();
+	      }
+	      catch (Exception e) {
+	        continue;
+	      }
+	      // Hand this socket off to an HttpProcessor
+	      HttpProcessor processor = new HttpProcessor(this);
+	      processor.setSocket(socket);
+	      Thread tprocessor = new Thread(processor);
+	      tprocessor.start();
+	    }
+	  }
 	
 	public void start(){
 		Thread thread = new Thread(this);

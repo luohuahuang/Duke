@@ -1,4 +1,4 @@
-package com.duke.moyan.connector;
+package com.duke.moyan.response;
 
 import java.io.IOException;
 import java.io.PrintWriter;
